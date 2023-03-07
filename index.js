@@ -3,7 +3,10 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+const carRouter = require('./routes/cars')
+
 app.use(express.json())
+app.use('/cars', carRouter)
 
 
 app.get('/first', (req,res) => {
