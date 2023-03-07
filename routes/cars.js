@@ -24,6 +24,20 @@ carRouter.post('/new', (req,res) => {
   
 })
 
+carRouter.post('/update/:carId', (req,res) => {
+    console.log('car Id', req.params.carId)
+    let make = req.body.make
+    let model = req.body.model
+    let year = req.body.year
+    let odometer = req.body.odometer
+
+    const queryStatement  = `UPDATE cars SET
+        make=$1, model=$2, year=$3, odometer=$4 WHERE car_id=$5 RETURNING *;`
+
+
+    dbQuery(queryStatement, [make,model, year, odometer,req.params.carId], req,res)
+})
+
 const dbQuery = (queryStatement, params, req, res) => {
     db.query(queryStatement, params, (error, results) => {
         if (error) {
