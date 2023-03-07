@@ -6,9 +6,14 @@ const port = 3000
 app.use(express.json())
 
 
-app.get('/', (req,res) => {
+app.get('/first', (req,res) => {
     console.log("Your first endpoint!")
-    res.status(200).json({"succes": "true"})
+    res.status(200).json({"success": "true"})
+})
+
+app.get('/second', (req,res) => {
+    console.log("Your second endpoint!")
+    res.status(200).json({"success": "true"})
 })
 
 app.listen(port, ()=>{
