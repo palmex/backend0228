@@ -7,15 +7,7 @@ carRouter.use(express.json())
 
 carRouter.get('/all', (req,res) => {
     const queryStatement  = 'SELECT * FROM cars;'
-    db.query(queryStatement, (error, results) => {
-        if (error) {
-            console.log(error)
-          res.status(500).json(error)  
-        } else {
-            console.log(results.rows)
-            res.status(200).json(results.rows)
-        }
-    }) 
+    dbQuery(queryStatement, [], req,res)
 })
 
 carRouter.post('/new', (req,res) => {
@@ -28,8 +20,12 @@ carRouter.post('/new', (req,res) => {
     const queryStatement  = `INSERT INTO cars (
         make, model, year, odometer
     ) VALUES ($1, $2, $3, $4) RETURNING *;`
+    dbQuery(queryStatement, [make,model, year, odometer], req,res)
+  
+})
 
-    db.query(queryStatement, [make,model, year, odometer], (error, results) => {
+const dbQuery = (queryStatement, params, req, res) => {
+    db.query(queryStatement, params, (error, results) => {
         if (error) {
             console.log(error)
           res.status(500).json(error)  
@@ -38,7 +34,7 @@ carRouter.post('/new', (req,res) => {
             res.status(200).json(results.rows)
         }
     }) 
-})
+}
 
 
 module.exports = carRouter; 
