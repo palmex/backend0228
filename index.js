@@ -3,9 +3,14 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const carRouter = require('./routes/cars')
+const userRouter = require('./routes/Users')
 
 app.use(express.json())
+app.use('/users', userRouter)
+
+const carRouter = require('./routes/cars')
+
+
 app.use('/cars', carRouter)
 
 
