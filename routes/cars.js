@@ -10,6 +10,28 @@ carRouter.get('/all', (req,res) => {
     dbQuery(queryStatement, [], req,res)
 })
 
+carRouter.get('/test/all', (req,res) => {
+    const queryStatement  = 'SELECT * FROM cars;'
+    console.log('1) before DB query')
+    // dbQuery(queryStatement, [], req,res)
+    let params = []
+
+    // call-back function
+    // cbfxn(input, (awaitedResponse) => {do something with awaited response})
+    db.query(queryStatement, params, (error, results) => {
+        console.log('3) DB has responded')
+        if (error) {
+            console.log(error)
+          res.status(500).json(error)  
+        } else {
+            // console.log(results.rows)
+            res.status(200).json(results.rows)
+        }
+        console.log('4) we responded to the user')
+    })
+
+})
+
 carRouter.post('/new', (req,res) => {
     console.log('car body', req.body)
     let make = req.body.make
@@ -34,10 +56,19 @@ carRouter.post('/update/:carId', (req,res) => {
     const queryStatement  = `UPDATE cars SET
         make=$1, model=$2, year=$3, odometer=$4 WHERE car_id=$5 RETURNING *;`
 
-
     dbQuery(queryStatement, [make,model, year, odometer,req.params.carId], req,res)
 })
 
+carRouter.delete('/delete/:carId', (req,res) => {
+    console.log('car Id', req.params.carId)
+    let carId = req.params.carId
+    const queryStatement  = `DELETE FROM cars WHERE car_id=$1;`
+    dbQuery(queryStatement, [carId], req,res)
+
+})
+
+
+// Abstracted function for making all DB calls, to reduce code size
 const dbQuery = (queryStatement, params, req, res) => {
     db.query(queryStatement, params, (error, results) => {
         if (error) {
@@ -47,7 +78,7 @@ const dbQuery = (queryStatement, params, req, res) => {
             console.log(results.rows)
             res.status(200).json(results.rows)
         }
-    }) 
+    })
 }
 
 
